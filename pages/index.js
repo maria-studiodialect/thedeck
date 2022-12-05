@@ -1,8 +1,68 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
+import { Player, FS_SDK_EVENTS_NAME } from 'furioos-sdk';
+import { useEffect } from 'react';
+
 
 export default function Home() {
+  const options = {
+    whiteLabel: true,
+    hideToolbar: false,
+    hideTitle: true,
+    hidePlayButton: false,
+    inactiveTimeout: 60000,
+  };
+
+  let player = null
+
+  useEffect(() => {
+    player = new Player("vqanXF2Z2tMv8xnt2" ,"container", options);
+  }, [])
+  
+  if (player !== null ) {
+  
+    player.on(FS_SDK_EVENTS_NAME.LOAD, function() {
+      console.log("SDK client FIRED: Player loaded");
+    });
+    
+    // Bind application install progress
+    player.on(FS_SDK_EVENTS_NAME.ON_APP_INSTALL_PROGRESS, function(data) {
+      console.log("SDK client FIRED: App install progress", data);
+    });
+    
+    // Bind application start
+    player.on(FS_SDK_EVENTS_NAME.ON_APP_START, function() {
+      console.log("SDK client FIRED: App start");
+    });
+    
+    // Bind stream start
+    player.on(FS_SDK_EVENTS_NAME.ON_STREAM_START, function() {
+      console.log("SDK client FIRED: Stream start");
+    });
+    
+    // Bind stream start
+    player.on(FS_SDK_EVENTS_NAME.ON_SDK_START, function() {
+      console.log("SDK client FIRED: SDK start");
+    });
+    
+    // Bind SDK messages
+    player.on(FS_SDK_EVENTS_NAME.ON_SDK_MESSAGE, function(data) {
+      console.log("SDK Message Received:", data);
+    });
+    
+    // Bind an event that lets you know if you can resume session
+    player.on(FS_SDK_EVENTS_NAME.ON_RESUME_SESSION, function({ canResumeSession }) {
+      if(canResumeSession) {
+        player.resumeSession();
+      }
+    });
+    
+    // Bind session stoppeds
+    player.on(FS_SDK_EVENTS_NAME.ON_SESSION_STOPPED, function() {
+      console.log("SDK client FIRED: Session Stopped");
+    });
+  }
   return (
     <div className={styles.container}>
       <Head>
@@ -15,57 +75,8 @@ export default function Home() {
         <h1 className={styles.title}>
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
+        <div id='container'/>
       </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
     </div>
   )
 }
