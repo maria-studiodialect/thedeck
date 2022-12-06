@@ -10,18 +10,14 @@ export default function Home() {
     whiteLabel: true,
     hideToolbar: false,
     hideTitle: true,
-    hidePlayButton: true,
+    hidePlayButton: false,
     inactiveTimeout: 60000,
   };
 
-  let player = null
+
 
   useEffect(() => {
-    player = new Player("vqanXF2Z2tMv8xnt2" ,"furioos_container", options);
-  }, [])
-  
-  if (player !== null ) {
-  
+    let player = new Player("vqanXF2Z2tMv8xnt2" ,"furioos_container", options);
     document.getElementById('button_setUserActive').addEventListener("click", () => {
       console.log("Call setUserActive");
       player.setUserActive();
@@ -164,7 +160,8 @@ export default function Home() {
     player.on(FS_SDK_EVENTS_NAME.ON_RESUME_SESSION, (data) => {
       console.warn("SDK client FIRED: session can be resumed", data);
     });
-  }
+  }, [])
+  
   return (
     <div className={styles.container}>
       <Head>
